@@ -1,12 +1,11 @@
 import React from 'react';
 import styled from 'styled-components'
-import './Field.css'
+
 
 const backCells = [];
 backCells.length = 16;
 backCells.fill(null);
 
-console.log(backCells)
 
 const Field = ({ cells }) => (
   <FieldContainer>
@@ -34,7 +33,7 @@ const Field = ({ cells }) => (
 
 
 const FieldContainer= styled.div`
-  top: 40px;
+ 
   margin-left: auto;
   margin-right: auto;
   height: 475px;
@@ -80,7 +79,6 @@ const Cell = styled(BackgroundCell)`
   color: #6a4e4e;
   font-weight: 900;
   font-size: ${({ value }) =>
-    // prettier-ignore
     value < 100 ? 66
       : value < 1000 ? 47
         : value < 10000 ? 40
@@ -91,7 +89,6 @@ const calculateBackgroundColor = value => {
   if (value === 0) {
     return 'transparent'
   }
-  // from 0 to 16
   const step = Math.min(16, Math.log2(value))
   return `hsl(0, ${calculateSaturation(step)}%, ${calculateLightness(step)}%);`
 }
