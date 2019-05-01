@@ -1,0 +1,31 @@
+.field_container {
+  top: 40px;
+  margin-left: auto;
+  margin-right: auto;
+  height: 475px;
+  width: 475px;
+  position: relative;
+}
+
+.field_background {
+  display: flex;
+  align-content: space-between;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  
+  position: absolute;
+  height: 450px;
+  padding: 5px;
+  width: 450px;
+  background-color: #bbada0;
+  border-radius: 10px;
+}
+
+.field_background-cell {
+  height: 100px;
+  width: 100px;
+  margin: 5px;
+  background-color: rgba(238, 228, 218, 0.35);
+  border-radius: 5px;
+}
