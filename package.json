@@ -1,7 +1,7 @@
 {
   "name": "test_2048",
   "version": "0.1.0",
-  "homepage" : "http://bohwebo.github.io/test_2048",
+  "homepage" : "https://bohwebo.github.io/test_2048/build/",
   "private": true,
   "dependencies": {
     "lodash": "^4.17.11",
