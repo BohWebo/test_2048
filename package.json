@@ -1,8 +1,11 @@
 {
   "name": "test_2048",
   "version": "0.1.0",
+  "homepage" : "http://bohwebo.github.io/test_2048",
   "private": true,
   "dependencies": {
+    "lodash": "^4.17.11",
+    "matrix-rotate": "0.0.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.0",

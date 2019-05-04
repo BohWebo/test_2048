@@ -1,5 +1,6 @@
 import matrixRotate from 'matrix-rotate';
-import { cellState } from './initCell'
+import { cloneDeep } from 'lodash';
+import { cellState } from './initCell';
 
 export const directions = {
   UP: 'UP',
@@ -8,9 +9,8 @@ export const directions = {
   RIGHT: 'RIGHT',
 }
 
-export const movingCells = (initCells, direction) => {
-  const cells = [ ...initCells ];
-
+export const moveCells = (initCells = [], direction) => {
+  const cells = cloneDeep(initCells);
   const matrix = Array.from(new Array(4), () =>
     Array.from(new Array(4), () => 0),
   );
@@ -24,7 +24,7 @@ export const movingCells = (initCells, direction) => {
   for (let y = 0; y < 4; y++) {
     for (let x = 0; x < 4; x++) {
       if (matrix[y][x] === 0) continue;
-      moveCell(matrix, x, y);
+      moveCell(matrix, x, y); 
     }
   }
 
@@ -38,13 +38,17 @@ export const movingCells = (initCells, direction) => {
     }
   }
 
-  cells.filter(cell => cell.by != null).forEach(cell => {
-    cell.x = cell.by.x;
-    cell.y = cell.by.y;
-    delete cell.by;
+  cells
+    .filter(cell => cell.by != null) 
+    .forEach(cell => {
+      cell.x = cell.by.x;
+      cell.y = cell.by.y;
+      delete cell.by;
   })
 
   return cells;
+
+
 }
 
 function moveCell(matrix, x, y) {
@@ -70,11 +74,12 @@ function moveCell(matrix, x, y) {
       matrix[currentRow][x] = 0;
       currentRow = nextRow;
     } else {
-      break
+      break;
     }
 
     nextRow -= 1;
   }
+  
 };
 
 function rotateMatrixFromDirection(matrix, direction) {
@@ -113,3 +118,4 @@ function rotateMatrixToDirection(matrix, direction) {
       break;
   }
 };
+

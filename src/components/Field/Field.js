@@ -1,13 +1,14 @@
 import React from 'react';
 import styled from 'styled-components'
 
+import { WinPanel, ContinueButton } from './WinPanel'
 
 const backCells = [];
 backCells.length = 16;
 backCells.fill(null);
 
 
-const Field = ({ cells }) => (
+const Field = ({ cells, isWin, continueGame }) => (
   <FieldContainer>
     <Background>
       {
@@ -15,8 +16,14 @@ const Field = ({ cells }) => (
       )}               
     </Background>
 
-    <Playground>
-    {cells.map(({ x, y, value, id }) => (
+   {isWin 
+   ? (<WinPanel>
+       <p>You Win!</p>
+       <ContinueButton onClick={continueGame}>continue game</ContinueButton>
+     </WinPanel>) 
+   
+   : (<Playground>
+        {cells.map(({ x, y, value, id }) => (
             <Cell 
               key={id} 
               x={x} 
@@ -27,7 +34,7 @@ const Field = ({ cells }) => (
             </Cell>
           ))}
 
-    </Playground>
+    </Playground>)}
   </FieldContainer>
 );
 

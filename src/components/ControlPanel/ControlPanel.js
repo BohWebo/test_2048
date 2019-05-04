@@ -31,6 +31,9 @@ const Button = styled.button`
   text-align: center;
   font-weight: bold;
   font-size: 25px;
+    :focus {
+      border: 1px solid #8f7a66;
+    }
   
 `;
 

@@ -4,8 +4,8 @@ import Header from './components/Header';
 import Field from './components/Field/Field';
 import ControlPanel from './components/ControlPanel/ControlPanel';
 import { initCells } from './gameLogic/initCell';
-import { directions } from './gameLogic/movingCells';
-import { movingCells } from './gameLogic/movingCells';
+import { directions } from './gameLogic/moveCells';
+import { moveCells } from './gameLogic/moveCells';
 import { increaseCell } from './gameLogic/increaseCell';
 import { populateField } from './gameLogic/populateField';
  
@@ -28,22 +28,47 @@ class App extends React.Component {
   getInitialState = () => ({
     cells: initCells(),
     score: 0,
-    isWinner: false,
+    isWin: false,
     isGameOver: false,
   })
 
-  handleRestartGame = () => {
-    this.setState(this.getInitialState())
+  calculateNewState(state) {
+    const increasedCells = increaseCell(state.cells);
+    const cellsWitIncreasedProp = increasedCells.filter(cell => cell.increased);
+    const score = cellsWitIncreasedProp.reduce((prevScore, plusScore) => prevScore + plusScore.value, state.score )      
+    const cells = increasedCells.map(cell => {
+      cell.increased = false
+      return cell;      
+    }); 
+    const isWin = cells.some(cell => cell.value === 2048);
+
+    return {
+      ...state,
+      cells,
+      score,
+      isWin,
+      }
   }
 
+  restartGame = () => {
+    this.setState(this.getInitialState());
+  }
+
+  continueGame = () => {
+    this.setState({isWin: false});
+  }
+  
   handleKeyUp = async ({ keyCode }) => {
-    if(this.state.cells >= 16) this.setState({isGameOver: true});
+    if(this.state.isGameOver) {
+      this.restartGame();
+
+    }
 
     if ([37, 38, 39, 40].includes(keyCode)) {
       this.setState(state => {
         return {
         ...state,
-        cells: movingCells(state.cells, this.KeyCodeToDirection[keyCode]),
+        cells: moveCells(state.cells, this.KeyCodeToDirection[keyCode]),
         }
       })
     }
@@ -51,24 +76,13 @@ class App extends React.Component {
     await delay(100);
     
     this.setState(state => {
-      const increasedCells = increaseCell(state.cells);
-      const increasedCell = increasedCells.filter(cell => cell.increased === true);
-      const score = increasedCell.length > 0 ? state.score + increasedCell[0].value : state.score;  
-      increasedCells.map(cell => cell.increased = false);
-      
-      return {
-      ...state,
-      cells: increasedCells,
-      score,
-      isWinner: increaseCell(state.cells).some(cell => cell.value === 2048)
-      }
-    })
-    
+      return this.calculateNewState(state)
+    });
     this.setState(state => ({
       ...state,
       cells: populateField(state.cells),
-      isGameOver: typeof populateField(state.cells) !== 'object' ? true : false,
-    }))
+      isGameOver: !populateField(state.cells) ? true : false,
+    }));
     
   }
 
@@ -76,13 +90,27 @@ class App extends React.Component {
     document.addEventListener('keyup', this.handleKeyUp);
   }
 
+  componentDidUpdate(_, prevState) {
+    if (prevState.isGameOver && !this.state.isGameOver) document.addEventListener('keyup', this.handleKeyUp);
+    
+    if (!prevState.isGameOver && this.state.isGameOver) document.removeEventListener('keyup', this.handleKeyUp);
+
+  }
+
+  componentWillMount() {
+    document.removeEventListener('keyup', this.handleKeyUp);
+  }
+
   render() {
-    const { cells, score, isGameOver } = this.state;
+    const { cells, score, isGameOver, isWin } = this.state;
     return (
       <div className="App">
         <Header />
-        <ControlPanel score={score} restartGame={this.handleRestartGame} />
-        {isGameOver ? <h1>GameOver</h1> : <Field cells={cells} />}
+        <ControlPanel score={score} restartGame={this.restartGame} />
+        {isGameOver 
+          ? <h1>Game Over</h1> 
+          : <Field cells={cells} isWin={isWin} continueGame={this.continueGame}  
+        />}
       </div>
     );  
   
